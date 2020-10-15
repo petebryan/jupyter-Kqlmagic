@@ -452,7 +452,10 @@ class _MyAadHelper(object):
             expires_on = token.get(TokenResponseFields.EXPIRES_ON)
         elif token.get(OAuth2TokenFields.EXPIRES_ON) is not None:
             # The date is represented as the number of seconds from "1970-01-01T0:0:0Z UTC" (corresponds to the token's exp claim).
-            expires_on = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(token.get(OAuth2TokenFields.EXPIRES_ON)))
+            expires_on_raw = token.get(OAuth2TokenFields.NOT_BEFORE)
+            if isinstance(expires_on_raw, str):
+                expires_on_raw = int(expires_on_raw)
+            expires_on = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(expires_on_raw))
         return expires_on
 
 
@@ -460,7 +463,10 @@ class _MyAadHelper(object):
         not_before = default_not_before
         if token.get(OAuth2TokenFields.NOT_BEFORE) is not None:
             # The date is represented as the number of seconds from "1970-01-01T0:0:0Z UTC" (corresponds to the token's nbf claim).
-            not_before = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(token.get(OAuth2TokenFields.NOT_BEFORE)))
+            not_before_raw = token.get(OAuth2TokenFields.NOT_BEFORE)
+            if isinstance(not_before_raw, str):
+                not_before_raw = int(not_before_raw)
+            not_before = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(not_before_raw))
         return not_before
 
 
